@@ -5,9 +5,7 @@ import sys
 # TO DO:
 #   Cell sight implementation
 #   Eating mechanism implementation
-#   Movement
 #   Respawn food
-#   Boundary collisions
 
 # Game constants
 SCREEN_WIDTH = 800
@@ -40,12 +38,30 @@ class Cell:
     
     #def eat()          Eats a Food object and deletes it (Maybe calls deconstructor?)
     #adds 25 seconds to life span
-    
-    #def change_direction()
-    
-    direction = .direction()
+ 
+    def boundary_check(self):
+        if self.x == 0 & self.y == 0:   # Top Left
+            self.direction = 5
+        elif self.x == 800 & self.y == 0:   # Top right
+            self.direction = 7
+        elif self.x == 0 & self.y == 600:   # Bottom left
+            self.direction = 3
+        elif self.x == 800 & self.y == 600:   # Bottom right
+            self.direction = 1
+            
+        elif self.x == 0:   # Left
+            self.direction = random.randint(3,5)
+        elif self.y == 0:   # Top
+            self.direction = random.randint(5,7)
+        elif self.x == 800: # Right
+            self.direction = random.randint(7, 9)
+            if self.direction == 9:
+                self.direction = 1
+        elif self.y == 600: # Bottom
+            self.direction = random.randint(1,3)
+            
     def move(self):         
-        match self.direction():
+        match self.direction:
             case 1: # Up Left
                 self.x -= 1
                 self.y -= 1
@@ -122,6 +138,7 @@ def main():
         # Draw cells
         for cell in cells:
             cell.decay()
+            cell.boundary_check()
             cell.move()
             cells = [cell for cell in cells if not cell.is_dead()]
             cell.draw(screen)
